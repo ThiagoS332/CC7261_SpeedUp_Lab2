@@ -2,33 +2,49 @@ from time import perf_counter_ns
 import simples as sp
 import mtrhead as mt
 
-def other_func():
-    with open("data.csv") as file:
-        data = [line.strip() for line in file]
+with open("data.csv") as file:
+    data = [line.strip() for line in file]
 
-    data = list(map(int, data))
+data = list(map(int, data))
 
-    print('\n\nanalise de %d valores\n\n'%(len(data)))
-    start1 = perf_counter_ns()
-    primo_sp = sp.resolve_simples(data)
-    finish1 = perf_counter_ns()
+print('\n\nanalise de %d valores\n\n'%(len(data)))
 
-    start2 = perf_counter_ns()
-    primo_mt = mt.resolve_trhread(data)
-    finish2 = perf_counter_ns()
+for threads in range(5):
 
-    print('simples          > threads')
-    print('%f ms   > %f ms  : tempo execucao'%((finish1-start1)/1000000,(finish2-start2)/1000000))
-    print('%d            > %d           :numeros primos encontrados'%(primo_sp,primo_mt))
+    simple_time_array = []
 
-def unlogin(fuck, wow, holy, shit):
-    print(fuck, wow,
-          holy + shit)
+    thread_time_array = []
+
+    for i in range(50):
+        start1 = perf_counter_ns()
+        prime_sp = sp.resolve_simples(data)
+        finish1 = perf_counter_ns()
+        simple_time = (finish1-start1)/1000000
+        simple_time_array.append(simple_time)
+
+        start2 = perf_counter_ns()
+        prime_mt = mt.resolve_trhread(data, threads+1)
+        finish2 = perf_counter_ns()
+        thread_time = (finish2-start2)/1000000
+        thread_time_array.append(thread_time)
+
+    all_simple_times = 0
+
+    all_thread_times = 0
+
+    for i in range(50):
+        all_simple_times += simple_time
+        all_thread_times += thread_time
+
+
+    average_simple_time = all_simple_times/len(simple_time_array)
+    average_thread_time = all_thread_times/len(thread_time_array)
+
+    SpeedUp = average_simple_time/average_thread_time
     
-    while(True):
-        print("this is not true")
-        break
-    
-    print("take that b8")
-    
-unlogin("fuck", "wow", "holy", "shit")
+    if (average_simple_time > average_thread_time):
+        print('simples          > threads (%d)'%(threads))
+        print('%f ms   > %f ms  : tempo execucao'%(average_simple_time,average_thread_time))
+        print('%d            > %d           :numeros primos encontrados\n'%(prime_sp,prime_mt))
+        print('SpeedUp =', SpeedUp)
+        print()

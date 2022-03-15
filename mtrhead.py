@@ -10,8 +10,11 @@ def tCalculaPrimo(data):
     return primos
 
 def resolve_trhread(data, threads):
-    #resultado melhor que o simples: 1, 3
-    ThreadsQtdd = threads
+    #resultado melhor que o simples: 1 (5), 3 (1), 33 (1), 42 (1), 48 (1), 50 (1), 69 (1)
+    if threads == 0:
+        ThreadsQtdd = 1
+    else:
+        ThreadsQtdd = threads
     tamanholista = len(data)
     index = range(0, tamanholista+(tamanholista//ThreadsQtdd), tamanholista//ThreadsQtdd)
     primos = 0
